@@ -1,10 +1,11 @@
-// routes/userRouter.js
 const express = require('express');
-// const { route } = require('../app');
 const router = express.Router();
-
 const authController = require('./../controllers/authController');
+const userController = require('./../controllers/userController');
 
-router.post('createAccount' , authController.createAccount);
-// router.post('create-account' , authController.createAccount);
+
+router.get('/', userController.getAllUsers);
+router.post('/createAccount', authController.createAccount);
+router.get('/:id', userController.getUser);
+
 module.exports = router;
