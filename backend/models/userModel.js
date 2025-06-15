@@ -3,16 +3,16 @@ const validator = require('validator');
 const userSchema = new mongoose.Schema({
     firstName : {
         type:String,
-        require:[true, 'Please enter your first name.']
+        required:[true, 'Please enter your first name.']
     },
     lastName : {
         type:String,
-        require:[true, 'Please enter your last name.'],
+        required:[true, 'Please enter your last name.'],
 
     },
     email : {
         type: String,
-        require:[true, 'Please enter your email.'],
+        required:[true, 'Please enter your email.'],
         unique: true,
         lowercase: true,
         validate: [validator.isEmail,'Please provide a vaild email.']
@@ -20,22 +20,22 @@ const userSchema = new mongoose.Schema({
     },
     phone : {
         type: String,
-        require :[true,'Please enter you phone number.'],
+        required :[true,'Please enter you phone number.'],
     },
     role: {
         type: String,
-        require:[true , 'Please select a role.'],
+        required:[true , 'Please select a role.'],
         enum:['admin' , 'driver']
 
     },
     password: {
         type : String,
-        require:[true, 'please enter a password.'],
+        required:[true, 'please enter a password.'],
         minlength:8,
     },
     passwordConfirm: {
         type : String,
-        require:[true , 'Please confirm your password.']
+        required:[true , 'Please confirm your password.']
     },
 
 });
