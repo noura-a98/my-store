@@ -31,8 +31,7 @@ app.use((req, res, next) => {
 
 
 
-// global error handler
-
+// add global error handler
 app.use(globalErrorHandler);
 
 //export app
