@@ -3,14 +3,13 @@ const dotenv = require('dotenv');
 
 // Handle uncaught exceptions exp undefied value
 process.on('uncaughtException' , err => {
-  console.log(err.name, err.message);
+  console.log(err.name, err.message );
   console.log('UNHANDLED REJECTION! 💥 Shutting down ...');
     //here we are ending all the process after we handle the server handles pending requests
     process.exit(1);
 
 });
 
-console.log(x)
 dotenv.config({path :'./.env'});
 
 const app = require('./app');
