@@ -20,3 +20,16 @@ const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`App is running on port ${port}...`);
 });
+
+
+// Handling unhandled rjections
+
+process.on('unhandledRejection' , err => {
+  console.log(err.name, err.message);
+  console.log('UNHANDLED REJECTION! 💥 Shutting down ...');
+  // gracfully close the server
+  server.close(() => {
+    //here we are ending all the process after we handle the server handles pending requests
+    process.exit(1);
+  })
+})
