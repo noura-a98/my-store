@@ -19,10 +19,12 @@ app.use(express.json());
 
 // Route import
 const userRouter = require('./routes/userRouter');
+const productRouter = require('./routes/productRouter')
+
 
 // Route usage
 app.use('/api/v1/users', userRouter); 
-
+app.use('/api/v1/products',productRouter);
 //unhandled routes
 app.use((req, res, next) => {
 
