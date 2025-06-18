@@ -1,8 +1,26 @@
 const AppError = require('../utils/appError');
 const User = require('../models/user');
 const catchAsync = require ('./../utils/catchAsync');
+const jwt = require('jsonwebtoken');
+const secretKey =' my very very secure key';
 
 
+// const token = jwt.sign({
+//     id : 1
+
+// },secretKey,{expiresIn: '1h'});
+
+// console.log(token)
+
+// jwt.verify(token,'abcde12345',(err,decoded) => {
+//     if(err){
+//         console.log('Token is invaild.');
+
+//     }
+//     else{
+//         console.log('Decoded Token💥💥: ',decoded)
+//     }
+// })
 exports.getAllUsers= catchAsync(async (req, res, next) => {
         const users = await User.find();
 
