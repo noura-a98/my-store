@@ -54,6 +54,7 @@ const userSchema = new mongoose.Schema({
 
         }
     },
+    passwordChangedAt : Date
 
 });
 
@@ -78,6 +79,15 @@ userSchema.methods.correctPassword = async function (
 
 };
 
+userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = this.passwordChangedAt.getTime() / 1000;
+    console.log(changedTimestamp,JWTTimestamp)
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  return false;
+};
 
 const User = mongoose.model('User' , userSchema);
 
