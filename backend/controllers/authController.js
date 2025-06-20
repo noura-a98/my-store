@@ -24,12 +24,18 @@ const createSendToken = ( user , statusCode , res) => {
 
 } 
 
-exports.createAccount = catchAsync (async (req, res, next) => {
-        const newUser = await User.create(req.body);
+exports.createAccount = catchAsync(async (req, res, next) => {
+  // Create userName from firstName and lastName
+  const userName = `${req.body.firstName}.${req.body.lastName}`.toLowerCase();
 
-        createSendToken(newUser,201,res);
+  // Add userName to the request body
+  req.body.userName = userName;
 
+  const newUser = await User.create(req.body);
+
+  createSendToken(newUser, 201, res);
 });
+
 
 exports.login =  catchAsync (async (req, res, next) => {
         const {userName , password} = req.body;
@@ -124,4 +130,23 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
 
 });
+
+// admin users password update
+exports.updateUsersPassword = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id).select('+password');
+
+  if (!user) {
+    return next(new AppError('No user found with that ID.', 404));
+  }
+
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Password updated successfully.'
+  });
+});
+
 
