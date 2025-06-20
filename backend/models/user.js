@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         required:[true , 'Please select a role.'],
-        enum:['admin' , 'driver'],
+        enum:['admin' , 'driver','influencer'],
 
     },
     password: {
@@ -54,8 +54,12 @@ const userSchema = new mongoose.Schema({
 
         }
     },
-    passwordChangedAt : Date
-
+    passwordChangedAt : Date,
+    active: {
+        type : Boolean,
+        default : true,
+        select : false
+    }
 });
 
 userSchema.pre('save', async function(next) {
@@ -89,6 +93,11 @@ userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
+userSchema.pre(/^find/,function(next){
+this.find({active:{$ne : false}});
+
+next();
+});
 const User = mongoose.model('User' , userSchema);
 
 module.exports = User;
