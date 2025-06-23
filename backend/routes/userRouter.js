@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 
+// router.patch('/updateProduct',upload.single('photo'),productController.updateProduct)
 const authController = require('./../controllers/authController');
 const userController = require('./../controllers/userController');
 
