@@ -37,11 +37,11 @@ app.use('/api',limiter)
 app.use(express.json({limit:'10kb'}));
 
 // Data sanitization against NoSQL query injection
-app.use(mongoSanitize());
+// app.use(mongoSanitize());
 
 // Data protection against xss
 
-app.use(xss());
+// app.use(xss());
 
 
 
