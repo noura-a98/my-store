@@ -24,6 +24,10 @@ const orderSchema = new mongoose.Schema({
     ref: 'Product',
     required: true
   },
+  quantity: {
+    type: Number,
+    required: true
+  },
   influencerCode: {
     type: String,
     default: null
@@ -34,18 +38,15 @@ const orderSchema = new mongoose.Schema({
   },
   driverId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Assuming drivers are stored in the users collection
+    ref: 'User',
     default: null
   },
   status: {
     type: String,
     enum: ['pending', 'processing', 'assigned', 'out-for-delivery', 'delivered'],
     default: 'pending'
-  },
-  quantitiy : {
-    type : Number
   }
-}, { timestamps: true }); // Adds createdAt and updatedAt automatically
+}, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);
 module.exports = Order;
