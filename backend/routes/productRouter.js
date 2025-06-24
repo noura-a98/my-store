@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('./../controllers/productController');
+const authController = require('./../controllers/authController');
+
+// Protect all routes and restrict to admin
+router.use(authController.protect);
+router.use(authController.restrictTo('admin'));
+
 
 router.get('/' ,productController.getAllProducts);
 router.post('/create-product',productController.createProduct);
