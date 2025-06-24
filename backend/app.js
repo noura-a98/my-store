@@ -51,11 +51,13 @@ app.use(express.json({limit:'10kb'}));
 const userRouter = require('./routes/userRouter');
 const productRouter = require('./routes/productRouter')
 const influencerRouter = require('./routes/influencerRouter');
+const orderRouter = require('./routes/orderRouter');
 
 // Route usage
 app.use('/api/v1/users', userRouter); 
 app.use('/api/v1/products',productRouter);
 app.use('/api/v1/influencers',influencerRouter);
+app.use('/api/v1/orders',orderRouter);
 
 //unhandled routes
 app.use((req, res, next) => {
