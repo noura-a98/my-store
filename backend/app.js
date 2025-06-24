@@ -7,6 +7,8 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+
+
 require('dotenv').config();
 
 const app = express();
@@ -48,11 +50,13 @@ app.use(express.json({limit:'10kb'}));
 // Route import
 const userRouter = require('./routes/userRouter');
 const productRouter = require('./routes/productRouter')
-
+const influencerRouter = require('./routes/influencerRouter');
 
 // Route usage
 app.use('/api/v1/users', userRouter); 
 app.use('/api/v1/products',productRouter);
+app.use('/api/v1/influencers',influencerRouter);
+
 //unhandled routes
 app.use((req, res, next) => {
 
