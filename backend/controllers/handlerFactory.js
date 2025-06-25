@@ -26,13 +26,13 @@ exports.getOne = (Model, popOptions) =>
 
     let query = Model.findById(req.params.id);
     // const doc = await Model.findById(req.params.id).populate('reviews');
-    if (!doc) {
+    if (!query) {
       return next(new AppError('No document found with that ID', 404));
     }
     res.status(200).json({
       status: 'sucess',
       data: {
-        data : doc,
+        data : query,
       },
     });
   });
