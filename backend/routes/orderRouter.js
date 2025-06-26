@@ -3,24 +3,25 @@ const router = express.Router();
 const orderController = require('../controllers/orderController');
 const authController = require('../controllers/authController');
 
-router.post('/checkoutSession/:productId',authController.protect,orderController.getCheckoutSession
-)
-// // Public: Create order
-// router.post('/', orderController.createOrder);
 
-// // Protect all routes below
-// router.use(authController.protect);
 
-// // Admin or driver can view all orders
-// router.get('/', authController.restrictTo('admin', 'driver'), orderController.getAllOrders);
+// Protect all routes below
+router.use(authController.protect);
 
-// // Get specific order by ID
-// router.get('/:id', authController.restrictTo('admin', 'driver'), orderController.getOrder);
+router.post('/create-cod', orderController.createCashOrder);
+// Admin or driver can view all orders
+router.get('/', authController.restrictTo('admin', 'driver'), orderController.getAllOrders);
 
-// // Update order status (admin or driver)
-// router.patch('/:id/status', authController.restrictTo('admin', 'driver'), orderController.updateOrderStatus);
+// Get specific order by ID
+router.get('/:id', authController.restrictTo('admin', 'driver'), orderController.getOrder);
 
-// // Assign driver (admin only)
-// router.patch('/:id/assign-driver', authController.restrictTo('admin'), orderController.assignDriver);
+// Update order status (admin or driver)
+router.patch('/:id/status', authController.restrictTo('admin', 'driver'), orderController.updateOrderStatus);
 
+// Assign driver (admin only)
+router.patch('/:id/assign-driver', authController.restrictTo('admin'), orderController.assignDriver);
+
+// router.post('/checkoutSession/:productId',authController.protect,orderController.getCheckoutSession
+    
+// );
 module.exports = router;
