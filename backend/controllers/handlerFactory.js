@@ -24,18 +24,18 @@ exports.createOne = (Model) => async (req, res, next) => {
 exports.getOne = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
 
-    let query = Model.findById(req.params.id);
-    // const doc = await Model.findById(req.params.id).populate('reviews');
-    if (!query) {
+    const doc = await Model.findById(req.params.id);
+    
+    if (!doc) {
       return next(new AppError('No document found with that ID', 404));
     }
     res.status(200).json({
       status: 'sucess',
-      data: {
-        data : query,
-      },
+      data: doc
     });
   });
+
+
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
