@@ -2,15 +2,21 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const { model } = require('mongoose');
 
-exports.getAllOne = Model =>  catchAsync(async (req, res, next) => {
- const doc = await Model.find();
+exports.getAllOne = Model => catchAsync(async (req, res, next) => {
+  let filter = {};
+  if (req.user.role === 'driver') {
+    filter = { driverId: req.user._id };
+  }
 
-    res.status(200).json({
-        status : 'success',
-        results: doc.length,
-        data: doc
-    })
+  const doc = await Model.find(filter); 
+
+  res.status(200).json({
+    status: 'success',
+    results: doc.length,
+    data: doc
   });
+});
+
 
 exports.createOne = (Model) => async (req, res, next) => {
   const doc = await Model.create(req.body);
