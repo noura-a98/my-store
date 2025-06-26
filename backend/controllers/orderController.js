@@ -4,15 +4,35 @@ const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
 const User = require('../models/user');
 const Product = require('../models/product');
+const DeliveryFee = require('../models/deliveryFee'); // make sure you import it
 
-// ✅ Create Cash on Delivery Order
 exports.createCashOrder = catchAsync(async (req, res, next) => {
-  const { product, quantity, customerName, email, phone, shipping, influencerCode } = req.body;
+  const {
+    product,
+    quantity,
+    customerName,
+    email,
+    phone,
+    shipping,
+    influencerCode
+  } = req.body;
 
-  // Validate product exists
+  // Validate product
   const existingProduct = await Product.findById(product);
   if (!existingProduct) return next(new AppError('Product not found', 400));
 
+  
+  // Fetch delivery fee from city
+  const cityFee = await DeliveryFee.findOne({ city: shipping.city });
+  if (!cityFee) return next(new AppError('Delivery fee for this city not found', 400));
+
+  const deliveryFee = cityFee.fee;
+  const productPrice = existingProduct.price;
+  const totalPrice = (existingProduct.price * quantity) + deliveryFee;
+
+  existingProduct.stock -= quantity;
+  await existingProduct.save();
+  
   const newOrder = await Order.create({
     product,
     quantity,
@@ -21,7 +41,10 @@ exports.createCashOrder = catchAsync(async (req, res, next) => {
     phone,
     shipping,
     influencerCode,
-    paymentMethod: 'cod'
+    paymentMethod: 'cod',
+    productPrice,
+    deliveryFee,
+    totalPrice
   });
 
   res.status(201).json({
@@ -29,6 +52,7 @@ exports.createCashOrder = catchAsync(async (req, res, next) => {
     data: newOrder
   });
 });
+
 
 // ✅ CRUD operations using factory functions
 exports.getAllOrders = factory.getAllOne(Order);
