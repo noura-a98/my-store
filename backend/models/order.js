@@ -32,9 +32,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  stripeSession: {
+    paymentMethod: {
     type: String,
-    required: true
+    enum: ['cod', 'stripe'],
+    default: 'cod'
   },
   driverId: {
     type: mongoose.Schema.Types.ObjectId,
