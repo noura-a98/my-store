@@ -8,7 +8,9 @@ const authController = require('../controllers/authController');
 // Protect all routes below
 router.use(authController.protect);
 
-router.post('/create-cod', orderController.createCashOrder);
+// create the order
+router.post('/',authController.restrictTo('admin'), orderController.createCashOrder);
+
 // Admin or driver can view all orders
 router.get('/', authController.restrictTo('admin', 'driver'), orderController.getAllOrders);
 
@@ -24,4 +26,7 @@ router.patch('/:id/assign-driver', authController.restrictTo('admin'), orderCont
 // router.post('/checkoutSession/:productId',authController.protect,orderController.getCheckoutSession
     
 // );
+router.delete('/:id', authController.restrictTo('admin'), orderController.deleteOrder);
+
+
 module.exports = router;
