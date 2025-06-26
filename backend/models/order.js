@@ -3,17 +3,17 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema({
   customerName: {
     type: String,
-    required: true,
+    required: [true,'Name is required'],
     trim: true
   },
   email: {
     type: String,
-    required: true,
+    required: [true,'Email is required!'],
     lowercase: true
   },
   phone: {
     type: String,
-    required: true
+    required: [true,'Phone Number is required!']
   },
   shipping: {
     address: { type: String, required: true },
@@ -26,13 +26,25 @@ const orderSchema = new mongoose.Schema({
   },
   quantity: {
     type: Number,
-    required: true
+    required: [true,'quantity is required.']
+  },
+  deliveryFee: {
+    type: Number,
+    required: [true,'delivery fee is required.']
+  },
+  productPrice:{
+    type: Number,
+    required : [true, 'a product has to have a price!']
+  },
+  totalPrice: {
+    type: Number,
+    required: [true,'total price is required!']
   },
   influencerCode: {
     type: String,
     default: null
   },
-    paymentMethod: {
+  paymentMethod: {
     type: String,
     enum: ['cod', 'stripe'],
     default: 'cod'
