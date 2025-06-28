@@ -75,13 +75,23 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Assign driver
+// Assign driver
 exports.assignDriver = catchAsync(async (req, res, next) => {
+  const { driverId } = req.body;
+
+  // 1. Check if the user exists and is a driver
+  const driver = await User.findById(driverId);
+  if (!driver || driver.role !== 'driver') {
+    return next(new AppError('Invalid driver ID or user is not a driver', 400));
+  }
+
+  // 2. Update the order
   const order = await Order.findByIdAndUpdate(
     req.params.id,
-    { driverId: req.body.driverId },
+    { driverId },
     { new: true }
   );
+
   if (!order) return next(new AppError('Order not found', 404));
 
   res.status(200).json({
@@ -89,7 +99,6 @@ exports.assignDriver = catchAsync(async (req, res, next) => {
     data: order
   });
 });
-
 
 
 
