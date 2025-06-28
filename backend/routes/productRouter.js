@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('./../controllers/productController');
-const authController = require('./../controllers/authController'); // assuming you have auth
+const authController = require('./../controllers/authController'); 
 
 // Protect these routes
 router.use(authController.protect);
