@@ -5,27 +5,14 @@ const authController = require('../controllers/authController');
 
 
 
-// Protect all routes below
-router.use(authController.protect);
+router.use(authController.protect);// Protect all routes below
 
-// create the order
-router.post('/',authController.restrictTo('admin'), orderController.createCashOrder);
 
-// Admin or driver can view all orders
-router.get('/', authController.restrictTo('admin', 'driver'), orderController.getAllOrders);
-
-// Get specific order by ID
-router.get('/:id', authController.restrictTo('admin', 'driver'), orderController.getOrder);
-
-// Update order status (admin or driver)
-router.patch('/:id/status', authController.restrictTo('admin', 'driver'), orderController.updateOrderStatus);
-
-// Assign driver (admin only)
-router.patch('/:id/assign-driver', authController.restrictTo('admin'), orderController.assignDriver);
-
-// router.post('/checkoutSession/:productId',authController.protect,orderController.getCheckoutSession
-    
-// );
+router.post('/',authController.restrictTo('admin'), orderController.createCashOrder);// create the order
+router.get('/', authController.restrictTo('admin', 'driver'), orderController.getAllOrders);// Admin or driver can view all orders
+router.get('/:id', authController.restrictTo('admin', 'driver'), orderController.getOrder);// Get specific order by ID
+router.patch('/:id/status', authController.restrictTo('admin', 'driver'), orderController.updateOrderStatus);// Update order status (admin or driver)
+router.patch('/:id/assign-driver', authController.restrictTo('admin'), orderController.assignDriver);// Assign driver (admin only)
 router.delete('/:id', authController.restrictTo('admin'), orderController.deleteOrder);
 
 
