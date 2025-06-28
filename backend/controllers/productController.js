@@ -3,7 +3,6 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
 const multer = require('multer');
-// const factory = require('./handlerFactory');
 
 
 
@@ -30,37 +29,40 @@ exports.uploadProductImages = upload.fields([
 ]);
 
 exports.resizeProductImages = async (req, res, next) => {
-  if (!req.files.imageCover || !req.files.images) return next();
-
-  // Cover image
   const timestamp = Date.now();
-  req.body.imageCover = `product-${timestamp}-cover.jpeg`;
 
-  await sharp(req.files.imageCover[0].buffer)
-    .resize(800, 800)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/img/products/${req.body.imageCover}`);
+  // Handle imageCover if present
+  if (req.files.imageCover) {
+    req.body.imageCover = `product-${timestamp}-cover.jpeg`;
 
-  // Product gallery images
-  req.body.images = [];
-  await Promise.all(
-    req.files.images.map(async (file, i) => {
-      const filename = `product-${timestamp}-${i + 1}.jpeg`;
+    await sharp(req.files.imageCover[0].buffer)
+      .resize(800, 800)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/products/${req.body.imageCover}`);
+  }
 
-      await sharp(file.buffer)
-        .resize(800, 800)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(`public/img/products/${filename}`);
+  // Handle images if present
+  if (req.files.images) {
+    req.body.images = [];
 
-      req.body.images.push(filename);
-    })
-  );
+    await Promise.all(
+      req.files.images.map(async (file, i) => {
+        const filename = `product-${timestamp}-${i + 1}.jpeg`;
+
+        await sharp(file.buffer)
+          .resize(800, 800)
+          .toFormat('jpeg')
+          .jpeg({ quality: 90 })
+          .toFile(`public/img/products/${filename}`);
+
+        req.body.images.push(filename);
+      })
+    );
+  }
 
   next();
 };
-
 
 exports.getAllProducts = factory.getAllOne(Product);
 exports.createProduct = factory.createOne(Product);
@@ -68,58 +70,3 @@ exports.deleteProduct = factory.deleteOne(Product);
 exports.updateProduct = factory.updateOne(Product);
 exports.getProduct = factory.getOne(Product);
 
-
-// exports.getAllProducts = catchAsync(async(req , res,next) => {
-
-//     const products = await Product.find();
-
-//     res.status(200).json({
-//         status : 'success',
-//         results: products.length,
-//         data: products
-//     })
-// });
-
-// exports.createProduct = catchAsync(async(req, res , next) => {
-//     const product = await Product.create(req.body);
-    
-//     res.status(201).json({
-//         status : 'success',
-//         data : product
-//     })
-// });
-
-// exports.deleteProduct = catchAsync(async(req , res, next) => {
-//    const product = await Product.findByIdAndDelete(req.params.id);
-//     if(!product){
-//     return next(new AppError('No product found with that ID', 404))
-//   }
-//     res.status(204).json({
-//         status :'success',
-//         data : null
-//     })
-// });
-
-// exports.updateProduct = catchAsync(async (req, res, next) => {
-//   const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-//     new: true, // this will return the new updated document instead of the original one
-//     runValidators: true, // this will run the validators on the updated document
-//   });
-//   if(!product){
-//     return next(new AppError('No product found with that ID', 404))
-//   }
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       product,
-//     },
-//   });
-// });
-// exports.getProduct = catchAsync(async(req , res, next) => {
-//     const product = await Product.findById(req.params.id);
-
-//     res.status(200).json({
-//         status :'success',
-//         data : product
-//     })
-// }); 
