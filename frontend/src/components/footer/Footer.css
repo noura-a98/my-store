@@ -1,0 +1,22 @@
+/* Footer.css */
+.footer {
+  padding: 1rem 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+  border-top: 1px solid #ebebeb;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.footer-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
