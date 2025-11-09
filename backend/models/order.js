@@ -3,17 +3,17 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema({
   customerName: {
     type: String,
-    required: [true,'Name is required'],
+    required: [true, 'Name is required'],
     trim: true
   },
   email: {
     type: String,
-    required: [true,'Email is required!'],
+    required: [true, 'Email is required!'],
     lowercase: true
   },
   phone: {
     type: String,
-    required: [true,'Phone Number is required!']
+    required: [true, 'Phone Number is required!']
   },
   shipping: {
     address: { type: String, required: true },
@@ -26,19 +26,19 @@ const orderSchema = new mongoose.Schema({
   },
   quantity: {
     type: Number,
-    required: [true,'quantity is required.']
+    required: [true, 'Quantity is required.']
   },
   deliveryFee: {
     type: Number,
-    required: [true,'delivery fee is required.']
+    required: [true, 'Delivery fee is required.']
   },
-  productPrice:{
+  productPrice: {
     type: Number,
-    required : [true, 'a product has to have a price!']
+    required: [true, 'A product has to have a price!']
   },
   totalPrice: {
     type: Number,
-    required: [true,'total price is required!']
+    required: [true, 'Total price is required!']
   },
   influencerCode: {
     type: String,
@@ -56,8 +56,24 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'processing', 'assigned', 'out-for-delivery', 'delivered'],
+    enum: [
+      'pending',
+      'processing',
+      'assigned',
+      'out-for-delivery',
+      'delivered',
+      'cancelled'
+    ],
+  
     default: 'pending'
+  },
+   message: {
+    type: String,
+    default: null // or you can make it optional without default
+  },
+  orderNumber: {
+    type: String,
+    unique: true
   }
 }, { timestamps: true });
 
