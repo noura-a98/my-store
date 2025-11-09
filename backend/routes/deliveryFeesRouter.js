@@ -3,9 +3,9 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const deliveryFeeController = require('../controllers/deliveryFeeController');
 
-router.use(authController.protect,authController.restrictTo('admin'));
 
 router.get('/', deliveryFeeController.getAllFees);
+router.use(authController.protect,authController.restrictTo('admin'));
 router.get('/:id',deliveryFeeController.getFee);
 router.post('/',deliveryFeeController.createFee);
 router.patch('/:id',deliveryFeeController.updateFee);
