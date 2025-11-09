@@ -98,6 +98,5 @@ this.find({active:{$ne : false}});
 
 next();
 });
-const User = mongoose.model('User' , userSchema);
-
+const User = mongoose.model('User', userSchema); // Capital 'U'
 module.exports = User;
