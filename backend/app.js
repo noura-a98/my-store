@@ -7,7 +7,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
-
+const path =require('path')
 
 require('dotenv').config();
 
@@ -18,8 +18,19 @@ app.use(helmet());
 
 
 //Enable CORS so frontend (like React) can access this API from another origin
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // or your frontend URL
+  credentials: true
+}));
+// Add this middleware before your static file serving
+app.use('/img', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header('Access-Control-Allow-Methods', 'GET');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
+app.use('/img', express.static(path.join(__dirname, 'public/img')));
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
@@ -28,7 +39,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // limit requests from same IP
 const limiter = rateLimit({
-  max:150,
+  max:1000,
   windowMs: 60 *60 * 1000,
   message : 'Too many requests from this IP, please try again in an hour!'
 });
@@ -37,7 +48,6 @@ app.use('/api',limiter)
 
 // Body parser , reading data from body into req.body
 app.use(express.json({limit:'10kb'}));
-
 // Data sanitization against NoSQL query injection
 // app.use(mongoSanitize());
 
@@ -54,14 +64,14 @@ const influencerRouter = require('./routes/influencerRouter');
 const orderRouter = require('./routes/orderRouter');
 // const webhookRoute = require('./routes/webhookRoutes');
 const deliveryFee = require('./routes/deliveryFeesRouter');
-
+const contactRouter = require('./routes/contactRouter');
 // Route usage
 app.use('/api/v1/users', userRouter); 
 app.use('/api/v1/products',productRouter);
 app.use('/api/v1/influencers',influencerRouter);
 app.use('/api/v1/orders',orderRouter);
 app.use('/api/v1/deliveryFee', deliveryFee);
-
+app.use('/api/v1/contact',contactRouter);
 // app.use('/api/v1', webhookRoute);
 
 //unhandled routes
