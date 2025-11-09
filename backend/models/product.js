@@ -42,5 +42,5 @@ productSchema.pre('save' , function(next){
     next();
 })
 
-const Product = mongoose.model('product',productSchema);
+const Product = mongoose.model('Product', productSchema); // Capital 'P'
 module.exports = Product;
