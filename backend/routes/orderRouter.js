@@ -5,14 +5,20 @@ const authController = require('../controllers/authController');
 
 
 
+
+
+router.post('/', orderController.createCashOrder);// create the order
 router.use(authController.protect);// Protect all routes below
 
-
-router.post('/',authController.restrictTo('admin'), orderController.createCashOrder);// create the order
 router.get('/', authController.restrictTo('admin', 'driver'), orderController.getAllOrders);// Admin or driver can view all orders
 router.get('/:id', authController.restrictTo('admin', 'driver'), orderController.getOrder);// Get specific order by ID
-router.patch('/:id/status', authController.restrictTo('admin', 'driver'), orderController.updateOrderStatus);// Update order status (admin or driver)
-router.patch('/:id/assign-driver', authController.restrictTo('admin'), orderController.assignDriver);// Assign driver (admin only)
+router.patch(
+  '/:id/assign',
+  authController.protect,
+  authController.restrictTo('admin', 'driver'),
+  orderController.assignDriverAndStatus
+);
+
 router.delete('/:id', authController.restrictTo('admin'), orderController.deleteOrder);
 
 

@@ -3,7 +3,11 @@ const router = express.Router();
 const productController = require('./../controllers/productController');
 const authController = require('./../controllers/authController'); 
 
-// Protect these routes
+// PUBLIC ROUTES (no authentication required)
+router.get('/', productController.getAllProducts);
+router.get('/:id', productController.getProduct);
+
+// PROTECTED ROUTES (require authentication and admin role)
 router.use(authController.protect);
 router.use(authController.restrictTo('admin'));
 
@@ -23,9 +27,6 @@ router.patch(
   productController.updateProduct
 );
 
-// Read-only public access
-router.get('/', productController.getAllProducts);
-router.get('/:id', productController.getProduct);
 router.delete('/:id', productController.deleteProduct);
 
 module.exports = router;
