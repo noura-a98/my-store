@@ -1,22 +1,32 @@
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const { model } = require('mongoose');
+const Product = require('../models/product');
+// handlerFactory.js
+exports.getAllOne = (Model, populateOptions) =>
+  catchAsync(async (req, res, next) => {
+    let filter = {};
+    
+    // Only apply driver filter if user is authenticated and is a driver
+    if (req.user && req.user.role === 'driver') {
+      filter = { driverId: req.user._id };
+    }
 
-exports.getAllOne = Model => catchAsync(async (req, res, next) => {
-  let filter = {};
-  if (req.user.role === 'driver') {
-    filter = { driverId: req.user._id };
-  }
+    let query = Model.find(filter);
+    if (populateOptions) {
+      populateOptions.forEach(option => {
+        query = query.populate(option);
+      });
+    }
 
-  const doc = await Model.find(filter); 
+    const docs = await query;
 
-  res.status(200).json({
-    status: 'success',
-    results: doc.length,
-    data: doc
+    res.status(200).json({
+      status: 'success',
+      results: docs.length,
+      data: docs
+    });
   });
-});
-
 
 exports.createOne = (Model) => async (req, res, next) => {
   const doc = await Model.create(req.body);
