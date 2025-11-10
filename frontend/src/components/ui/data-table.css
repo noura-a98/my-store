@@ -1,0 +1,59 @@
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;  /* allows scroll inside table-wrapper ONLY if really needed */
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  max-width: 100%;  /* don’t let it exceed container width */
+}
+
+.table-wrapper table {
+  width: 100%;       /* table fills container width */
+  border-collapse: collapse;
+  min-width: 800px;  /* minimal width to keep columns readable */
+}
+
+.table-wrapper thead {
+  background: #f7fafc;
+}
+
+.table-wrapper th,
+.table-wrapper td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #edf2f7;
+  text-align: left;
+  white-space: nowrap; /* prevent weird wrapping */
+}
+
+.table-wrapper th {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.table-wrapper tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Role Badge Styles */
+.table-wrapper td span {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.table-wrapper td span.admin {
+  background: #e0f2f1;
+  color: #00796b;
+}
+
+.table-wrapper td span.user {
+  background: #f1f8e9;
+  color: #33691e;
+}

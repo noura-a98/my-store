@@ -1,72 +1,250 @@
-import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import "./product.css";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import "./product.css"; // Your enhanced CSS file
 
 function Product({ addToCart, setCart }) {
+  const { productId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [quantity, setQuantity] = useState(1);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [imageLoading, setImageLoading] = useState(true);
 
-  const product = {
-    id: "123",
-    name: "Sweet Drops – Sugar-Free",
-    price: 49.0,
-    image: "/images.jpeg",
-  };
+  // Capture influencer code from URL and save to localStorage
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const influencerCode = params.get('influencer');
+    if (influencerCode) {
+      localStorage.setItem('influencerCode', influencerCode.toLowerCase());
+      console.log('Saved influencer code:', influencerCode.toLowerCase());
+    }
+  }, [location.search]);
 
-  const handleAddToCart = () => {
-    addToCart({ ...product, quantity });
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`http://localhost:8000/api/v1/products/${productId}`);
+
+        if (!res.ok) throw new Error("Product not found");
+
+        const data = await res.json();
+        const productData = data.data;
+
+        setProduct({
+          id: productData._id,
+          name: productData.name,
+          description: productData.description,
+          price: productData.price,
+          stock: productData.stock || 99, 
+          imageCover: productData.imageCover,
+          slug: productData.slug
+        });
+      } catch (error) {
+        console.error('Fetch error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (productId) {
+      fetchProduct();
+    } else {
+      setLoading(false);
+    }
+  }, [productId]);
+
+  const getImageUrl = (imageCover) => {
+    if (!imageCover) return 'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?auto=format&fit=crop&w=800&q=80';
+    return `http://localhost:8000/img/products/${imageCover}`;
   };
 
   const handleBuyNow = () => {
-    setCart([{ ...product, quantity }]);
-    navigate('/checkout');
+    if (product) {
+      // Cancel addToCart to avoid opening sidebar
+      setCart([{ ...product, quantity }]);  // Directly set cart for checkout
+      navigate('/checkout');                // Navigate to checkout page
+    }
   };
 
-  return (
-    <div className="product-page">
-      <div className="product-card">
-        <div className="product-image">
-          <img src={product.image} alt={product.name} />
-        </div>
-        <div className="product-details">
-          <h2>{product.name}</h2>
-          <p className="product-description">
-            A guilt-free, sugar-free sweetener made from natural ingredients. Perfect for your morning coffee, smoothies, and baking needs.
-          </p>
-          <p className="product-price">AED {product.price.toFixed(2)}</p>
-          <div className="quantity-wrapper">
-            <label htmlFor="quantity">Qty:</label>
-            <input
-              type="number"
-              id="quantity"
-              name="quantity"
-              min="1"
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value))}
-            />
+  const handleQuantityChange = (e) => {
+    const newQuantity = parseInt(e.target.value);
+    const maxStock = product?.stock || 99;
+    
+    if (!isNaN(newQuantity) && newQuantity >= 1 && newQuantity <= maxStock) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  const incrementQuantity = (e) => {
+    e.preventDefault();
+    const maxStock = product?.stock || 99;
+    if (quantity < maxStock) {
+      setQuantity(prev => prev + 1);
+    }
+  };
+
+  const decrementQuantity = (e) => {
+    e.preventDefault();
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="product-page">
+        <div className="product-container">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <div className="loading-text">Loading product details...</div>
           </div>
-          <div className="btn">
-            <button className="add-to-cart" onClick={handleAddToCart}>
-              Add to Cart
-            </button>
-            <button className="buy-now" onClick={handleBuyNow}>
-              Buy Now
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="product-page">
+        <div className="product-container">
+          <div className="loading-container">
+            <div className="loading-text">Product not found</div>
+            <button 
+              onClick={() => navigate('/')}
+              className="btn-primary"
+              style={{ 
+                padding: '0.75rem 1.5rem',
+                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.75rem',
+                cursor: 'pointer',
+                marginTop: '1rem'
+              }}
+            >
+              Return Home
             </button>
           </div>
         </div>
       </div>
+    );
+  }
 
-      <div className="shipping-info">
-        <h3>Shipping & Delivery</h3>
-        <p>
-          Orders placed before 3 PM are shipped the same day. We deliver across the UAE within 1–3 business days. 
-          Free delivery on orders over AED 100.
-        </p>
-        <ul>
-          <li>✔️ Same-day shipping on weekdays</li>
-          <li>✔️ Tracking number provided after dispatch</li>
-          <li>✔️ Secure & eco-friendly packaging</li>
-        </ul>
+  const maxStock = product.stock || 99;
+
+  return (
+    <div className="product-page">
+      <div className="product-container">
+        <div className="product-card" style={{ display: 'flex', gap: '0', alignItems: 'stretch' }}>
+          <div className="product-image" style={{ flex: '1' }}>
+            {imageLoading && (
+              <div style={{ 
+                position: 'absolute', 
+                top: '50%', 
+                left: '50%', 
+                transform: 'translate(-50%, -50%)',
+                zIndex: 1
+              }}>
+                <div className="loading-spinner" style={{ width: '40px', height: '40px' }}></div>
+              </div>
+            )}
+            <img
+              src={getImageUrl(product.imageCover)}
+              alt={product.name}
+              onLoad={() => setImageLoading(false)}
+              onError={(e) => {
+                e.target.src = 'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?auto=format&fit=crop&w=800&q=80';
+                e.target.alt = 'Sweet Drops Product';
+                setImageLoading(false);
+              }}
+              crossOrigin="anonymous"
+              style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s ease' }}
+            />
+          </div>
+          
+          <div className="product-details" style={{ flex: '1' }}>
+            <h2>{product.name}</h2>
+            
+            <p className="product-description">
+              {product.description}
+            </p>
+            
+            <div className="product-price">
+              AED {product.price.toFixed(2)}
+            </div>
+            
+            <div className="quantity-wrapper">
+              <label htmlFor="quantity">Quantity:</label>
+              <div className="quantity-controls">
+                <button
+                  type="button"
+                  onClick={decrementQuantity}
+                  disabled={quantity <= 1}
+                  className="quantity-btn"
+                  aria-label="Decrease quantity"
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  min="1"
+                  max={maxStock}
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  className="quantity-input"
+                />
+                <button
+                  type="button"
+                  onClick={incrementQuantity}
+                  disabled={quantity >= maxStock}
+                  className="quantity-btn"
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            
+            <div className="btn">
+              <button className="buy-now" onClick={handleBuyNow}>
+                Buy Now - AED {(product.price * quantity).toFixed(2)}
+              </button>
+            </div>
+
+            {/* Stock indicator */}
+            <div style={{ 
+              marginTop: '1.5rem', 
+              fontSize: '0.9rem', 
+              color: product.stock > 10 ? '#059669' : '#dc2626',
+              fontWeight: '500'
+            }}>
+              {product.stock > 10 
+                ? '✅ In Stock' 
+                : `⚠️ Only ${product.stock} left in stock`
+              }
+            </div>
+          </div>
+        </div>
+
+        <div className="shipping-info">
+          <h3>Shipping & Delivery</h3>
+          <p>
+            Orders placed before 3 PM are shipped the same day. We deliver across the UAE within 1–3 business days.
+            Free delivery on orders over AED 100.
+          </p>
+          <ul>
+            <li>Same-day shipping on weekdays</li>
+            <li>Tracking number provided after dispatch</li>
+            <li>Secure & eco-friendly packaging</li>
+            <li>30-day money-back guarantee</li>
+            <li>Customer support available 24/7</li>
+          </ul>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,247 @@
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Mobile Header - Hidden on Desktop */
+.mobile-header {
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #1d1f27;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.mobile-menu-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  flex-shrink: 0;
+  background-color: #1d1f27;
+  color: #f5f5f5;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.sidebar-header h2 {
+  font-size: 1.6rem;
+  margin: 0;
+  color: #ffffff;
+}
+
+.sidebar-close {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar nav li {
+  margin-bottom: 1rem;
+}
+
+.sidebar nav a, .dropdown-toggle {
+  color: #f0f0f0;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  display: block;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar nav a:hover, .dropdown-toggle:hover {
+  background-color: #2d2f38;
+}
+
+.dropdown-menu {
+  list-style: none;
+  padding-left: 1.5rem;
+  margin-top: 0.3rem;
+  background: #252730;
+  border-left: 2px solid #444;
+  border-radius: 6px;
+}
+
+.dropdown-menu li {
+  margin-bottom: 0.4rem;
+}
+
+.dropdown-menu a {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  display: block;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.dropdown-menu a:hover {
+  background-color: #393b48;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  color: #f0f0f0;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #2d2f38;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f4f6f9;
+  min-width: 0;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+/* Sidebar Overlay for Mobile */
+.sidebar-overlay {
+  display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  /* Show Mobile Header */
+  .mobile-header {
+    display: flex;
+  }
+
+  /* Hide Sidebar by Default on Mobile */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    transform: translateX(-100%);
+    z-index: 1001;
+    padding: 1rem;
+  }
+
+  .sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-header {
+    justify-content: space-between;
+  }
+
+  .sidebar-close {
+    display: block;
+  }
+
+  /* Sidebar Overlay */
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  /* Adjust Dashboard Content */
+  .dashboard-content {
+    margin-top: 70px; /* Account for mobile header */
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100vw;
+  }
+
+  .dashboard-content {
+    padding: 1rem 0.5rem;
+  }
+
+  .mobile-header h2 {
+    font-size: 1rem;
+  }
+}
+
+/* Desktop Adjustments */
+@media (min-width: 1200px) {
+  .sidebar {
+    width: 280px;
+  }
+
+  .dashboard-content {
+    padding: 2.5rem;
+  }
+}

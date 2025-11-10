@@ -1,0 +1,210 @@
+.page-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  font-family: 'Poppins', sans-serif;
+  background: #fefefe;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.delivery-fees-page h2 {
+  color: #1E4123;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.fee-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.fee-form input[type="text"],
+.fee-form input[type="number"] {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1.8px solid #ddd;
+  width: 200px;
+  transition: border-color 0.3s ease;
+}
+
+.fee-form input[type="text"]:focus,
+.fee-form input[type="number"]:focus {
+  outline: none;
+  border-color: #1E4123;
+  box-shadow: 0 0 6px #1E4123aa;
+}
+
+.fee-form button {
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #1E4123;
+  color: white;
+  transition: background-color 0.25s ease;
+}
+
+.fee-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fee-form .cancel-btn {
+  background-color: #ef4444;
+  margin-left: 0.5rem;
+}
+
+.fee-form .cancel-btn:hover {
+  background-color: #b02a37;
+}
+
+.fee-form button:hover:not(:disabled) {
+  background-color: #154314;
+}
+
+.toast {
+  max-width: 400px;
+  margin: 0 auto 1rem auto;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.toast.success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.toast.error {
+  background-color: #fdecea;
+  color: #b02a37;
+  border: 1px solid #f87171;
+}
+
+.fees-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  background: white;
+}
+
+.fees-table thead {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #444;
+}
+
+.fees-table th,
+.fees-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 1rem;
+  color: #333;
+}
+
+.fees-table tbody tr:hover {
+  background-color: #f0f9f4;
+}
+
+.edit-btn,
+.delete-btn {
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-right: 0.4rem;
+  transition: background-color 0.2s ease;
+}
+
+.edit-btn {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #1e40af;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #b02a37;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .fee-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fee-form input[type="text"],
+  .fee-form input[type="number"] {
+    width: 100%;
+  }
+
+  .fee-form button,
+  .fee-form .cancel-btn {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+.toast-wrapper {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 300px;
+}
+
+.toast {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  animation: fadeInOut 3s ease-in-out forwards;
+}
+
+.toast.success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.toast.error {
+  background-color: #fdecea;
+  color: #b02a37;
+  border: 1px solid #f87171;
+}
+
+@keyframes fadeInOut {
+  0%   { opacity: 0; transform: translateY(-10px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}

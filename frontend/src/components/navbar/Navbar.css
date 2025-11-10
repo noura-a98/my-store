@@ -1,10 +1,8 @@
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
-
 }
 
 .navbar {
@@ -15,35 +13,183 @@
   background-color: #ffffff;
   border-bottom: 1px solid #eaeaea;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .logo {
   height: 50px;
   width: auto;
   object-fit: contain;
+  z-index: 1002;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.logo:hover {
+  opacity: 0.8;
+}
+
+.navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
 }
 
 .navbar-links {
   list-style: none;
   display: flex;
-  gap: 24px;
+  gap: 40px;
 }
 
 .link {
-  cursor: pointer;
+  position: relative;
   font-weight: 500;
-  font-size: 15px;
-  color: #4d4d4d;
+  font-size: 16px;
+  color: #333;
   transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.link:hover::after {
+  width: 100%;
+}
+
+/* Remove the underline effect when not hovering */
+.link a {
+  text-decoration: none;
+  color: inherit;
+  padding: 8px 4px;
+  position: relative;
 }
 
 .link:hover {
-  color: #007bff;
+  color: #4CAF50;
 }
 
-.navbar-icons {
-  display: flex;
-  gap: 16px;
-  font-size: 20px;
+/* Body padding to prevent content from hiding under sticky navbar */
+body:not(.no-navbar) {
+  padding-top: 74px; /* Only apply padding when navbar is present */
+}
+
+/* Class to remove navbar padding for admin/driver dashboards */
+body.no-navbar {
+  padding-top: 0;
+}
+
+/* Sticky navbar styles */
+.menu-toggle {
+  display: none;
+  font-size: 24px;
   cursor: pointer;
+  color: #333;
+  z-index: 1002;
+  transition: color 0.3s ease;
+}
+
+.menu-toggle:hover {
+  color: #4CAF50;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 12px 16px;
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
+  }
+
+  .menu-toggle {
+    display: block;
+    margin-left: auto;
+  }
+
+  .navbar-center {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100vh;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(0);
+    transition: left 0.3s ease;
+    z-index: 1002;
+  }
+
+  .navbar-center.active {
+    left: 0;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    gap: 30px;
+    text-align: center;
+  }
+
+  .link {
+    font-size: 18px;
+    padding: 10px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 10px 12px;
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  .navbar-links {
+    gap: 25px;
+  }
+
+  .link {
+    font-size: 16px;
+  }
+
+  .menu-toggle {
+    font-size: 20px;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .navbar-links {
+    gap: 30px;
+  }
+
+  .link {
+    font-size: 15px;
+  }
+}
+
+/* Small desktop adjustments */
+@media (max-width: 1200px) and (min-width: 1025px) {
+  .navbar-links {
+    gap: 35px;
+  }
 }

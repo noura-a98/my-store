@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './../../pages/dashboard/admin/products/AdminProducts.css';
-
+import './InfluencerFormModal.css'
 function InfluencerFormModal({ isOpen, onClose, onSave, editingInfluencer }) {
   const [formData, setFormData] = useState({
     name: '',

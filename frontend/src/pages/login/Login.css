@@ -51,3 +51,13 @@
 .login-card button:hover {
   background-color: #3b6e49;
 }
+.error-message {
+  background: #ffe6e6;
+  color: #d9534f;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  border: 1px solid #f5c2c2;
+  text-align: left;
+}
