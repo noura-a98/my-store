@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 
@@ -10,21 +10,55 @@ import CartSidebar from './components/cart/CartSidebar';
 import Checkout from './pages/checkout/Checkout';
 import OrderSuccess from './pages/order/OrderSuccess';
 import Login from './pages/login/Login';
-import Cart from './pages/cart/Cart';
 import AdminDashboard from './pages/dashboard/admin/AdminDashboard';
 import DashboardLayout from './components/dashboard/DashboardLayout';
-import UsersManagement from './pages/dashboard/admin/users/UsersManagement';
+import UsersManagement from './pages/dashboard/admin/users/staff/UsersManagement';
 import ProductsManagement from './pages/dashboard/admin/products/ProductsManagement';
-import NewOrders from './pages/dashboard/admin/order/NewOrder'
-import AllOrders from './pages/dashboard/admin/order/AllOrders'
-import ProtectedRoute from './components/ProtectedRoute'; // adjust path if needed
-import InfluencersManagement from './pages/dashboard/admin/users/InfluencersManagement';
+import AllOrders from './pages/dashboard/admin/order/AllOrders';
+import ProtectedRoute from './components/ProtectedRoute';
+import InfluencersManagement from './pages/dashboard/admin/users/influeners/InfluencersManagement';
+import DeliveryFees from './pages/dashboard/admin/DeliveryFees/DeliveryFees';
+import DriverDashboard from './pages/dashboard/driverDashboard/driverDashboard'; 
 
 function AppContent() {
   const location = useLocation();
   const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
-  const [cart, setCart] = useState([]); // For Buy Now flow
+
+  // Persist cartItems (Cart Sidebar) in localStorage
+  const [cartItems, setCartItems] = useState(() => {
+    const stored = localStorage.getItem('cartItems');
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // Persist cart (Buy Now flow) in localStorage
+  const [cart, setCart] = useState(() => {
+    const stored = localStorage.getItem('cart');
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
+  const hideLayout = location.pathname.startsWith('/admin') || location.pathname === '/login' || location.pathname === '/driver-dashboard';
+
+  // Dynamic body class management for navbar spacing
+  useEffect(() => {
+    if (hideLayout) {
+      document.body.classList.add('no-navbar');
+    } else {
+      document.body.classList.remove('no-navbar');
+    }
+
+    // Cleanup function to remove class when component unmounts
+    return () => {
+      document.body.classList.remove('no-navbar');
+    };
+  }, [hideLayout]);
 
   const toggleCart = () => setCartOpen(!cartOpen);
 
@@ -40,57 +74,41 @@ function AppContent() {
     setCartItems((prevItems) => prevItems.filter(item => item.id !== id));
   };
 
-  const dummyOrder = {
-    _id: 'ORD123456',
-    createdAt: new Date(),
-    totalPrice: 129.98,
-    paymentMethod: 'cod',
-    items: [
-      { name: 'Sweet Drops – Sugar-Free', quantity: 2, price: 49.99 },
-      { name: 'Sugar-Free Vanilla', quantity: 1, price: 29.99 }
-    ]
-  };
-
-const hideLayout = location.pathname.startsWith('/admin') || location.pathname === '/login';
-
   return (
     <div className="App">
-    {!hideLayout && <Navbar onCartClick={toggleCart} />}
-{!hideLayout && (
-  <CartSidebar
-    open={cartOpen}
-    onClose={toggleCart}
-    cartItems={cartItems}
-    removeFromCart={removeFromCart}
-  />
-)}
-
+      {!hideLayout && <Navbar onCartClick={toggleCart} />}
+      {!hideLayout && (
+        <CartSidebar
+          open={cartOpen}
+          onClose={toggleCart}
+          cartItems={cartItems}
+          removeFromCart={removeFromCart}
+        />
+      )}
 
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home addToCart={addToCart} />} />
-          <Route path="/shop" element={<Product addToCart={addToCart} setCart={setCart} />} />
-          <Route path="/checkout" element={<Checkout cart={cart} />} />
-          <Route path="/success" element={<OrderSuccess order={dummyOrder} />} />
+          <Route path="/product/:productId" element={<Product addToCart={addToCart} setCart={setCart} />} />
+          <Route path="/checkout" element={<Checkout cart={cart} setCart={setCart} />} />
+          <Route path="/success" element={<OrderSuccess />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/driver-dashboard" element={<DriverDashboard />} />
 
-           <Route path="/admin" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-              <Route index element={<AdminDashboard />} />
+          <Route path="/admin" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+            <Route index element={<AdminDashboard />} />
             <Route path="users">
               <Route path="staff" element={<UsersManagement />} />
               <Route path="influencers" element={<InfluencersManagement />} />
-            </Route>              <Route path="products" element={<ProductsManagement />} />
-              <Route path="orders">
-              <Route path="new" element={<NewOrders />} />
-              <Route path="all" element={<AllOrders />} />
-              </Route>
+            </Route>
+            <Route path="products" element={<ProductsManagement />} />
+            <Route path="orders" element={<AllOrders />} />
+            <Route path="deliveryFees" element={<DeliveryFees />} />
           </Route>
-
         </Routes>
       </main>
 
-      {!hideLayout  && <Footer />}
+      {!hideLayout && <Footer />}
     </div>
   );
 }
