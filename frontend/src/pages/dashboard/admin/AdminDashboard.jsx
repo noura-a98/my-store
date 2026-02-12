@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import './AdminDashboard.css';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import "./AdminDashboard.css";
 
 function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -9,42 +9,52 @@ function AdminDashboard() {
     revenue: 0,
     pendingOrders: 0,
     recentUsers: [],
-    recentOrders: []
+    recentOrders: [],
   });
 
-  const token = localStorage.getItem('token'); // Or however you're storing the token
+  const token = localStorage.getItem("token"); // Or however you're storing the token
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         const headers = {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         };
 
         const [usersRes, ordersRes] = await Promise.all([
-          axios.get('http://localhost:8000/api/v1/users', { headers }),
-          axios.get('http://localhost:8000/api/v1/orders', { headers })
+          axios.get(`${process.env.REACT_APP_API_URL}/api/v1/users`, {
+            headers,
+          }),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/v1/orders`, {
+            headers,
+          }),
         ]);
 
         const users = usersRes?.data?.data || [];
         const orders = ordersRes?.data?.data || [];
 
-    const validOrders = orders.filter(order => order.status !== 'cancelled');
+        const validOrders = orders.filter(
+          (order) => order.status !== "cancelled",
+        );
 
-    const totalRevenue = validOrders.reduce((sum, order) => sum + (order.totalPrice || 0), 0);
-    const pendingOrdersCount = validOrders.filter(order => order.status === 'pending').length;
+        const totalRevenue = validOrders.reduce(
+          (sum, order) => sum + (order.totalPrice || 0),
+          0,
+        );
+        const pendingOrdersCount = validOrders.filter(
+          (order) => order.status === "pending",
+        ).length;
 
-    setStats({
-      totalUsers: users.length,
-      totalOrders: validOrders.length,
-      revenue: totalRevenue.toFixed(2),
-      pendingOrders: pendingOrdersCount,
-      recentUsers: users.slice(-3).reverse(),
-      recentOrders: validOrders.slice(-3).reverse()
-    });
-
+        setStats({
+          totalUsers: users.length,
+          totalOrders: validOrders.length,
+          revenue: totalRevenue.toFixed(2),
+          pendingOrders: pendingOrdersCount,
+          recentUsers: users.slice(-3).reverse(),
+          recentOrders: validOrders.slice(-3).reverse(),
+        });
       } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
+        console.error("Failed to fetch dashboard data:", error);
       }
     };
 
@@ -55,7 +65,7 @@ function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <h1 style={{ textAlign: 'center' }}>Admin Dashboard</h1>
+      <h1 style={{ textAlign: "center" }}>Admin Dashboard</h1>
 
       <div className="dashboard-cards">
         <div className="admin-card">
@@ -93,7 +103,8 @@ function AdminDashboard() {
           <ul>
             {stats.recentOrders.map((order, i) => (
               <li key={order._id || i}>
-                #{order._id.slice(-4)} - AED {order.totalPrice} - {order.paymentMethod.toUpperCase()}
+                #{order._id.slice(-4)} - AED {order.totalPrice} -{" "}
+                {order.paymentMethod.toUpperCase()}
               </li>
             ))}
           </ul>

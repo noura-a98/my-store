@@ -3,7 +3,7 @@ import axios from "axios";
 import UserFormModal from "../../../../../components/modals/staff/UserFormModal";
 import { columns } from "./columns";
 import { DataTable } from "../../../../../components/ui/data-table";
-import './AdminUsers.css'
+import "./AdminUsers.css";
 function UsersManagement() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -18,9 +18,12 @@ function UsersManagement() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/users`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       setUsers(res.data.data);
     } catch (error) {
       console.error("Failed to fetch users:", error);
@@ -31,18 +34,18 @@ function UsersManagement() {
     try {
       if (editingUser) {
         const res = await axios.patch(
-          `http://localhost:8000/api/v1/users/${userData._id}`,
+          `${process.env.REACT_APP_API_URL}/api/v1/users/${userData._id}`,
           userData,
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         setUsers((prev) =>
-          prev.map((u) => (u._id === userData._id ? res.data.data : u))
+          prev.map((u) => (u._id === userData._id ? res.data.data : u)),
         );
       } else {
         const res = await axios.post(
-          "http://localhost:8000/api/v1/users/createAccount",
+          `${process.env.REACT_APP_API_URL}/api/v1/users/createAccount`,
           userData,
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         setUsers((prev) => [...prev, res.data.data.user]);
       }
@@ -56,9 +59,12 @@ function UsersManagement() {
   const handleDeleteUser = async (userId) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await axios.delete(`http://localhost:8000/api/v1/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       setUsers((prev) => prev.filter((user) => user._id !== userId));
     } catch (error) {
       console.error("Failed to delete user:", error);
@@ -68,7 +74,7 @@ function UsersManagement() {
   const filteredUsers = users.filter((user) =>
     `${user.firstName} ${user.lastName} ${user.userName} ${user.email}`
       .toLowerCase()
-      .includes(search.toLowerCase())
+      .includes(search.toLowerCase()),
   );
 
   return (

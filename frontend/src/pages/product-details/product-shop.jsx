@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./product.css"; // Your enhanced CSS file
 
 function Product({ addToCart, setCart }) {
@@ -15,10 +15,10 @@ function Product({ addToCart, setCart }) {
   // Capture influencer code from URL and save to localStorage
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const influencerCode = params.get('influencer');
+    const influencerCode = params.get("influencer");
     if (influencerCode) {
-      localStorage.setItem('influencerCode', influencerCode.toLowerCase());
-      console.log('Saved influencer code:', influencerCode.toLowerCase());
+      localStorage.setItem("influencerCode", influencerCode.toLowerCase());
+      console.log("Saved influencer code:", influencerCode.toLowerCase());
     }
   }, [location.search]);
 
@@ -26,7 +26,9 @@ function Product({ addToCart, setCart }) {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:8000/api/v1/products/${productId}`);
+        const res = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/v1/products/${productId}`,
+        );
 
         if (!res.ok) throw new Error("Product not found");
 
@@ -38,12 +40,12 @@ function Product({ addToCart, setCart }) {
           name: productData.name,
           description: productData.description,
           price: productData.price,
-          stock: productData.stock || 99, 
+          stock: productData.stock || 99,
           imageCover: productData.imageCover,
-          slug: productData.slug
+          slug: productData.slug,
         });
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
       } finally {
         setLoading(false);
       }
@@ -57,22 +59,23 @@ function Product({ addToCart, setCart }) {
   }, [productId]);
 
   const getImageUrl = (imageCover) => {
-    if (!imageCover) return 'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?auto=format&fit=crop&w=800&q=80';
-    return `http://localhost:8000/img/products/${imageCover}`;
+    if (!imageCover)
+      return "https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?auto=format&fit=crop&w=800&q=80";
+    return `${process.env.REACT_APP_API_URL}/img/products/${imageCover}`;
   };
 
   const handleBuyNow = () => {
     if (product) {
       // Cancel addToCart to avoid opening sidebar
-      setCart([{ ...product, quantity }]);  // Directly set cart for checkout
-      navigate('/checkout');                // Navigate to checkout page
+      setCart([{ ...product, quantity }]); // Directly set cart for checkout
+      navigate("/checkout"); // Navigate to checkout page
     }
   };
 
   const handleQuantityChange = (e) => {
     const newQuantity = parseInt(e.target.value);
     const maxStock = product?.stock || 99;
-    
+
     if (!isNaN(newQuantity) && newQuantity >= 1 && newQuantity <= maxStock) {
       setQuantity(newQuantity);
     }
@@ -82,14 +85,14 @@ function Product({ addToCart, setCart }) {
     e.preventDefault();
     const maxStock = product?.stock || 99;
     if (quantity < maxStock) {
-      setQuantity(prev => prev + 1);
+      setQuantity((prev) => prev + 1);
     }
   };
 
   const decrementQuantity = (e) => {
     e.preventDefault();
     if (quantity > 1) {
-      setQuantity(prev => prev - 1);
+      setQuantity((prev) => prev - 1);
     }
   };
 
@@ -112,17 +115,17 @@ function Product({ addToCart, setCart }) {
         <div className="product-container">
           <div className="loading-container">
             <div className="loading-text">Product not found</div>
-            <button 
-              onClick={() => navigate('/')}
+            <button
+              onClick={() => navigate("/")}
               className="btn-primary"
-              style={{ 
-                padding: '0.75rem 1.5rem',
-                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.75rem',
-                cursor: 'pointer',
-                marginTop: '1rem'
+              style={{
+                padding: "0.75rem 1.5rem",
+                background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                color: "white",
+                border: "none",
+                borderRadius: "0.75rem",
+                cursor: "pointer",
+                marginTop: "1rem",
               }}
             >
               Return Home
@@ -138,17 +141,25 @@ function Product({ addToCart, setCart }) {
   return (
     <div className="product-page">
       <div className="product-container">
-        <div className="product-card" style={{ display: 'flex', gap: '0', alignItems: 'stretch' }}>
-          <div className="product-image" style={{ flex: '1' }}>
+        <div
+          className="product-card"
+          style={{ display: "flex", gap: "0", alignItems: "stretch" }}
+        >
+          <div className="product-image" style={{ flex: "1" }}>
             {imageLoading && (
-              <div style={{ 
-                position: 'absolute', 
-                top: '50%', 
-                left: '50%', 
-                transform: 'translate(-50%, -50%)',
-                zIndex: 1
-              }}>
-                <div className="loading-spinner" style={{ width: '40px', height: '40px' }}></div>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  zIndex: 1,
+                }}
+              >
+                <div
+                  className="loading-spinner"
+                  style={{ width: "40px", height: "40px" }}
+                ></div>
               </div>
             )}
             <img
@@ -156,26 +167,26 @@ function Product({ addToCart, setCart }) {
               alt={product.name}
               onLoad={() => setImageLoading(false)}
               onError={(e) => {
-                e.target.src = 'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?auto=format&fit=crop&w=800&q=80';
-                e.target.alt = 'Sweet Drops Product';
+                e.target.src =
+                  "https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?auto=format&fit=crop&w=800&q=80";
+                e.target.alt = "Sweet Drops Product";
                 setImageLoading(false);
               }}
               crossOrigin="anonymous"
-              style={{ opacity: imageLoading ? 0 : 1, transition: 'opacity 0.3s ease' }}
+              style={{
+                opacity: imageLoading ? 0 : 1,
+                transition: "opacity 0.3s ease",
+              }}
             />
           </div>
-          
-          <div className="product-details" style={{ flex: '1' }}>
+
+          <div className="product-details" style={{ flex: "1" }}>
             <h2>{product.name}</h2>
-            
-            <p className="product-description">
-              {product.description}
-            </p>
-            
-            <div className="product-price">
-              AED {product.price.toFixed(2)}
-            </div>
-            
+
+            <p className="product-description">{product.description}</p>
+
+            <div className="product-price">AED {product.price.toFixed(2)}</div>
+
             <div className="quantity-wrapper">
               <label htmlFor="quantity">Quantity:</label>
               <div className="quantity-controls">
@@ -209,7 +220,7 @@ function Product({ addToCart, setCart }) {
                 </button>
               </div>
             </div>
-            
+
             <div className="btn">
               <button className="buy-now" onClick={handleBuyNow}>
                 Buy Now - AED {(product.price * quantity).toFixed(2)}
@@ -217,16 +228,17 @@ function Product({ addToCart, setCart }) {
             </div>
 
             {/* Stock indicator */}
-            <div style={{ 
-              marginTop: '1.5rem', 
-              fontSize: '0.9rem', 
-              color: product.stock > 10 ? '#059669' : '#dc2626',
-              fontWeight: '500'
-            }}>
-              {product.stock > 10 
-                ? '✅ In Stock' 
-                : `⚠️ Only ${product.stock} left in stock`
-              }
+            <div
+              style={{
+                marginTop: "1.5rem",
+                fontSize: "0.9rem",
+                color: product.stock > 10 ? "#059669" : "#dc2626",
+                fontWeight: "500",
+              }}
+            >
+              {product.stock > 10
+                ? "✅ In Stock"
+                : `⚠️ Only ${product.stock} left in stock`}
             </div>
           </div>
         </div>
@@ -234,8 +246,9 @@ function Product({ addToCart, setCart }) {
         <div className="shipping-info">
           <h3>Shipping & Delivery</h3>
           <p>
-            Orders placed before 3 PM are shipped the same day. We deliver across the UAE within 1–3 business days.
-            Free delivery on orders over AED 100.
+            Orders placed before 3 PM are shipped the same day. We deliver
+            across the UAE within 1–3 business days. Free delivery on orders
+            over AED 100.
           </p>
           <ul>
             <li>Same-day shipping on weekdays</li>

@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './Orders.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./Orders.css";
 
 const STATUSES = [
-  'pending',
-  'processing',
-  'assigned',
-  'out-for-delivery',
-  'delivered',
-  'cancelled',
+  "pending",
+  "processing",
+  "assigned",
+  "out-for-delivery",
+  "delivered",
+  "cancelled",
 ];
 
 export default function AllOrders() {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   const [orders, setOrders] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [draft, setDraft] = useState({});
-  const [activeTab, setActiveTab] = useState('pending');
-  const [toast, setToast] = useState('');
+  const [activeTab, setActiveTab] = useState("pending");
+  const [toast, setToast] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
@@ -27,100 +27,109 @@ export default function AllOrders() {
       try {
         const headers = { Authorization: `Bearer ${token}` };
         const [ordersRes, driversRes] = await Promise.all([
-          axios.get('http://localhost:8000/api/v1/orders', { headers }),
-          axios.get('http://localhost:8000/api/v1/users?role=driver', { headers }),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/v1/orders`, {
+            headers,
+          }),
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/api/v1/users?role=driver`,
+            { headers },
+          ),
         ]);
 
         setOrders(ordersRes.data.data);
         // Filter drivers on client-side as additional safeguard
-        const filteredDrivers = driversRes.data.data.filter(user => 
-          user.role === 'driver' || user.role === 'Driver'
+        const filteredDrivers = driversRes.data.data.filter(
+          (user) => user.role === "driver" || user.role === "Driver",
         );
         setDrivers(filteredDrivers);
 
         const d = {};
-        ordersRes.data.data.forEach(o => {
+        ordersRes.data.data.forEach((o) => {
           d[o._id] = {
-            driverId: o.driverId?._id || '',
+            driverId: o.driverId?._id || "",
             status: o.status,
           };
         });
         setDraft(d);
       } catch (err) {
-        console.error('Fetch failed:', err);
+        console.error("Fetch failed:", err);
       }
     };
 
     fetchData();
   }, [token]);
 
-  const filtered = orders.filter(o =>
-    activeTab === 'all' ? true : o.status === activeTab
+  const filtered = orders.filter((o) =>
+    activeTab === "all" ? true : o.status === activeTab,
   );
 
   const totalPages = Math.ceil(filtered.length / rowsPerPage);
   const paginated = filtered.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
-  const badgeClass = s =>
+  const badgeClass = (s) =>
     `badge ${
       {
-        pending: 'badge-yellow',
-        processing: 'badge-orange',
-        assigned: 'badge-blue',
-        'out-for-delivery': 'badge-cyan',
-        delivered: 'badge-green',
-        cancelled: 'badge-red',
+        pending: "badge-yellow",
+        processing: "badge-orange",
+        assigned: "badge-blue",
+        "out-for-delivery": "badge-cyan",
+        delivered: "badge-green",
+        cancelled: "badge-red",
       }[s]
     }`;
 
   const onDraftChange = (id, field, val) =>
-    setDraft(p => ({ ...p, [id]: { ...p[id], [field]: val } }));
+    setDraft((p) => ({ ...p, [id]: { ...p[id], [field]: val } }));
 
-  const saveRow = async id => {
+  const saveRow = async (id) => {
     const { driverId, status } = draft[id];
-    
+
     // Check if status requires a driver
-    const statusesRequiringDriver = ['assigned', 'out-for-delivery', 'delivered'];
+    const statusesRequiringDriver = [
+      "assigned",
+      "out-for-delivery",
+      "delivered",
+    ];
     const requiresDriver = statusesRequiringDriver.includes(status);
-    
+
     // Validation: status is required, driver required only for certain statuses
     if (!status) {
-      setToast('Please select a status ✗');
-      setTimeout(() => setToast(''), 3000);
+      setToast("Please select a status ✗");
+      setTimeout(() => setToast(""), 3000);
       return;
     }
-    
+
     if (requiresDriver && !driverId) {
-      setToast('Driver required for this status ✗');
-      setTimeout(() => setToast(''), 3000);
+      setToast("Driver required for this status ✗");
+      setTimeout(() => setToast(""), 3000);
       return;
     }
 
     try {
       const headers = { Authorization: `Bearer ${token}` };
       const payload = { status };
-      
+
       // Only include driverId if it's provided (for statuses that need it)
       if (driverId) {
         payload.driverId = driverId;
       }
-      
+
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/orders/${id}/assign`,
+        `${process.env.REACT_APP_API_URL}/api/v1/orders/${id}/assign`,
         payload,
-        { headers }
+        { headers },
       );
 
-      setOrders(p => p.map(o => (o._id === id ? res.data.data : o)));
-      setToast('Order saved ✓');
-      setTimeout(() => setToast(''), 3000);
+      setOrders((p) => p.map((o) => (o._id === id ? res.data.data : o)));
+      setToast("Order saved ✓");
+      setTimeout(() => setToast(""), 3000);
     } catch (err) {
-      console.error('Save failed:', err);
-      setToast('Save failed ✗');
-      setTimeout(() => setToast(''), 3000);
+      console.error("Save failed:", err);
+      setToast("Save failed ✗");
+      setTimeout(() => setToast(""), 3000);
     }
   };
 
@@ -133,16 +142,16 @@ export default function AllOrders() {
         </div>
 
         <div className="tabs">
-          {['all', ...STATUSES].map(s => (
+          {["all", ...STATUSES].map((s) => (
             <button
               key={s}
-              className={s === activeTab ? 'tab active' : 'tab'}
+              className={s === activeTab ? "tab active" : "tab"}
               onClick={() => {
                 setActiveTab(s);
                 setCurrentPage(1);
               }}
             >
-              {s === 'all' ? 'All' : s.replace(/-/g, ' ')}
+              {s === "all" ? "All" : s.replace(/-/g, " ")}
             </button>
           ))}
         </div>
@@ -172,15 +181,21 @@ export default function AllOrders() {
             <tbody>
               {paginated.map((o, i) => (
                 <tr key={o._id}>
-                  <td data-label="#">{(currentPage - 1) * rowsPerPage + i + 1}</td>
+                  <td data-label="#">
+                    {(currentPage - 1) * rowsPerPage + i + 1}
+                  </td>
                   <td data-label="Order #">{o.orderNumber}</td>
                   <td data-label="Customer">{o.customerName}</td>
                   <td data-label="Product">
                     <div className="product-info">
-                      <div className="product-name">{o.product?.name || 'N/A'}</div>
+                      <div className="product-name">
+                        {o.product?.name || "N/A"}
+                      </div>
                     </div>
                   </td>
-                  <td data-label="Unit Price">AED {o.productPrice || o.product?.price || 0}</td>
+                  <td data-label="Unit Price">
+                    AED {o.productPrice || o.product?.price || 0}
+                  </td>
                   <td data-label="Qty">
                     <span className="quantity-badge">{o.quantity}</span>
                   </td>
@@ -195,7 +210,7 @@ export default function AllOrders() {
                   </td>
                   <td data-label="Address">
                     <div className="address-info">
-                      <div>{o.shipping?.address || 'N/A'}</div>
+                      <div>{o.shipping?.address || "N/A"}</div>
                       {o.shipping?.city && <small>{o.shipping.city}</small>}
                     </div>
                   </td>
@@ -203,34 +218,38 @@ export default function AllOrders() {
                   <td data-label="Payment">
                     <div className="payment-method">
                       <span className={`payment-badge ${o.paymentMethod}`}>
-                        {o.paymentMethod?.toUpperCase() || 'COD'}
+                        {o.paymentMethod?.toUpperCase() || "COD"}
                       </span>
                     </div>
                   </td>
                   <td data-label="Message">
-                      {o.message ? (
-                        <div  title={o.message}>
-                          {o.message.length > 30 ? `${o.message.substring(0, 30)}...` : o.message}
-                        </div>
-                      ) : (
-                        <span className="no-message">No message</span>
-                      )}
-                    
+                    {o.message ? (
+                      <div title={o.message}>
+                        {o.message.length > 30
+                          ? `${o.message.substring(0, 30)}...`
+                          : o.message}
+                      </div>
+                    ) : (
+                      <span className="no-message">No message</span>
+                    )}
                   </td>
                   <td data-label="Driver">
                     <select
                       className="driver-select"
-                      style={{ backgroundColor: 'white' }}
-                      value={draft[o._id]?.driverId || ''}
-                      onChange={e => onDraftChange(o._id, 'driverId', e.target.value)}
+                      style={{ backgroundColor: "white" }}
+                      value={draft[o._id]?.driverId || ""}
+                      onChange={(e) =>
+                        onDraftChange(o._id, "driverId", e.target.value)
+                      }
                     >
                       <option value="">
-                        {['assigned', 'out-for-delivery', 'delivered'].includes(draft[o._id]?.status) 
-                          ? 'Select Driver (Required)' 
-                          : 'Select Driver (Optional)'
-                        }
+                        {["assigned", "out-for-delivery", "delivered"].includes(
+                          draft[o._id]?.status,
+                        )
+                          ? "Select Driver (Required)"
+                          : "Select Driver (Optional)"}
                       </option>
-                      {drivers.map(d => (
+                      {drivers.map((d) => (
                         <option key={d._id} value={d._id}>
                           {d.firstName} {d.lastName}
                         </option>
@@ -241,10 +260,14 @@ export default function AllOrders() {
                     <select
                       className={`status-select ${draft[o._id]?.status}`}
                       value={draft[o._id]?.status}
-                      onChange={e => onDraftChange(o._id, 'status', e.target.value)}
+                      onChange={(e) =>
+                        onDraftChange(o._id, "status", e.target.value)
+                      }
                     >
-                      {STATUSES.map(s => (
-                        <option key={s} value={s}>{s.replace(/-/g, ' ')}</option>
+                      {STATUSES.map((s) => (
+                        <option key={s} value={s}>
+                          {s.replace(/-/g, " ")}
+                        </option>
                       ))}
                     </select>
                   </td>
@@ -257,7 +280,7 @@ export default function AllOrders() {
               ))}
               {paginated.length === 0 && (
                 <tr>
-                  <td colSpan="16" style={{ textAlign: 'center' }}>
+                  <td colSpan="16" style={{ textAlign: "center" }}>
                     No orders
                   </td>
                 </tr>
@@ -271,7 +294,7 @@ export default function AllOrders() {
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i + 1}
-              className={i + 1 === currentPage ? 'page-btn active' : 'page-btn'}
+              className={i + 1 === currentPage ? "page-btn active" : "page-btn"}
               onClick={() => setCurrentPage(i + 1)}
             >
               {i + 1}
