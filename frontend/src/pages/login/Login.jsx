@@ -1,57 +1,55 @@
-import './Login.css';
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import "./Login.css";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // use env variable for API base
-const API_URL = process.env.REACT_APP_API_URL;
+// const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = "http://127.0.0.1:8000/api/v1";
 const LOG_LEVEL = process.env.REACT_APP_LOG_LEVEL || "error";
 
-
 function Login() {
-  const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(''); 
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      // ✅ use API_URL from env instead of hardcoding
       const res = await axios.post(`${API_URL}/users/login`, {
         userName,
-        password
+        password,
       });
 
       if (LOG_LEVEL === "debug") {
-        console.log('Login successful:', res.data);
+        console.log("Login successful:", res.data);
       }
 
-      localStorage.setItem('token', res.data.token);
-      
+      localStorage.setItem("token", res.data.token);
+
       const headers = { Authorization: `Bearer ${res.data.token}` };
       const userRes = await axios.get(`${API_URL}/users/me`, { headers });
       const user = userRes.data.data;
-      
-      localStorage.setItem('user', JSON.stringify(user));
 
-      if (user.role === 'admin') {
-        navigate('/admin');
-      } else if (user.role === 'driver') {
-        navigate('/driver-dashboard');
+      localStorage.setItem("user", JSON.stringify(user));
+
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "driver") {
+        navigate("/driver-dashboard");
       } else {
-        navigate('/admin'); 
+        navigate("/admin");
       }
-
     } catch (err) {
       if (LOG_LEVEL === "debug") {
-        console.error('Login failed:', err.response?.data || err.message);
+        console.error("Login failed:", err.response?.data || err.message);
       }
-      setError(err.response?.data?.message || 'Invalid username or password.');
+      setError(err.response?.data?.message || "Invalid username or password.");
     } finally {
       setLoading(false);
     }
@@ -61,9 +59,9 @@ function Login() {
     <div className="login-wrapper">
       <div className="login-card">
         <h2>Staff Login</h2>
-        
+
         {error && <div className="error-message">{error}</div>}
-        
+
         <form onSubmit={handleLogin}>
           <input
             type="text"
@@ -71,9 +69,9 @@ function Login() {
             value={userName}
             onChange={(e) => {
               setUserName(e.target.value);
-              if (error) setError('');
+              if (error) setError("");
             }}
-            onFocus={() => setError('')}
+            onFocus={() => setError("")}
             required
             disabled={loading}
           />
@@ -84,19 +82,19 @@ function Login() {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              if (error) setError('');
+              if (error) setError("");
             }}
-            onFocus={() => setError('')}
+            onFocus={() => setError("")}
             required
             disabled={loading}
           />
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             style={{ opacity: loading ? 0.6 : 1 }}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>

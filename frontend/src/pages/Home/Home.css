@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 * {
   margin: 0;
@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   color: #111827;
   line-height: 1.6;
   background-color: #ffffff;
@@ -46,32 +46,49 @@ body {
 }
 
 .hero::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 5rem;
   left: 2.5rem;
   width: 18rem;
   height: 18rem;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.3) 0%, rgba(34, 197, 94, 0.1) 50%, transparent 100%);
+  background: radial-gradient(
+    circle,
+    rgba(34, 197, 94, 0.3) 0%,
+    rgba(34, 197, 94, 0.1) 50%,
+    transparent 100%
+  );
   border-radius: 50%;
   animation: pulse 4s ease-in-out infinite;
 }
 
 .hero::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 5rem;
   right: 2.5rem;
   width: 24rem;
   height: 24rem;
-  background: radial-gradient(circle, rgba(5, 150, 105, 0.2) 0%, rgba(5, 150, 105, 0.05) 50%, transparent 100%);
+  background: radial-gradient(
+    circle,
+    rgba(5, 150, 105, 0.2) 0%,
+    rgba(5, 150, 105, 0.05) 50%,
+    transparent 100%
+  );
   border-radius: 50%;
   animation: pulse 4s ease-in-out infinite 2s;
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.1); opacity: 0.3; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
 }
 
 .hero-content {
@@ -216,15 +233,18 @@ body {
 
 .hero-image {
   position: relative;
-  animation: fadeInRight 1s ease-out 0.3s both;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .hero-image img {
   width: 100%;
   max-width: 500px;
-  border-radius: 2rem;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-  transition: transform 0.5s ease;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
 }
 
 .hero-image:hover img {
@@ -247,9 +267,19 @@ body {
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% { transform: rotate(12deg) translateY(0); }
-  40% { transform: rotate(12deg) translateY(-10px); }
-  60% { transform: rotate(12deg) translateY(-5px); }
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: rotate(12deg) translateY(0);
+  }
+  40% {
+    transform: rotate(12deg) translateY(-10px);
+  }
+  60% {
+    transform: rotate(12deg) translateY(-5px);
+  }
 }
 
 /* Features Section */
@@ -354,7 +384,7 @@ body {
 }
 
 .about-image::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 50%);
@@ -548,24 +578,24 @@ body {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  
+
   .grid-cols-3 {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .hero-text {
     text-align: center;
     margin-bottom: 3rem;
   }
-  
+
   .hero-buttons {
     flex-direction: column;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
@@ -577,30 +607,30 @@ body {
     width: 95%;
     padding: 0 1rem;
   }
-  
+
   .grid-cols-3 {
     grid-template-columns: 1fr;
   }
-  
+
   .hero::before,
   .hero::after {
     display: none;
   }
-  
+
   .hero-benefits {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .contact-form {
     padding: 2rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
     text-align: center;
   }
-  
+
   .feature-card {
     padding: 2rem;
   }
@@ -610,20 +640,20 @@ body {
   .hero-buttons {
     width: 100%;
   }
-  
+
   .btn-primary,
   .btn-secondary {
     width: 100%;
     justify-content: center;
   }
-  
+
   .discount-badge {
     top: -1rem;
     right: -1rem;
     padding: 0.5rem 1rem;
     font-size: 1rem;
   }
-}/* Add these styles to your Home.css file */
+} /* Add these styles to your Home.css file */
 
 /* Status Message Styles */
 .status-message {

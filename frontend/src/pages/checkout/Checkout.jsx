@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Checkout.css";
 import { useNavigate } from "react-router-dom";
-
+const uaeCitiesFallback = [
+  { city: "Dubai", fee: 20 },
+  { city: "Abu Dhabi", fee: 25 },
+  { city: "Sharjah", fee: 20 },
+  { city: "Ajman", fee: 20 },
+  { city: "Ras Al Khaimah", fee: 30 },
+  { city: "Fujairah", fee: 35 },
+  { city: "Umm Al Quwain", fee: 25 },
+];
 function Checkout({ cart, setCart }) {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -29,13 +37,13 @@ function Checkout({ cart, setCart }) {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/v1/deliveryFee`,
-        );
+        const res = await fetch(`${process.env.REACT_APP_API_URL}deliveryFee`);
         const data = await res.json();
-        setCities(data.data || []);
+        const fetchedCities = data.data || [];
+        setCities(fetchedCities.length > 0 ? fetchedCities : uaeCitiesFallback);
       } catch (err) {
         console.error("Error fetching cities:", err);
+        setCities(uaeCitiesFallback); // fallback on error too
       } finally {
         setLoadingCities(false);
       }
@@ -47,9 +55,7 @@ function Checkout({ cart, setCart }) {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/v1/products`,
-        );
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}products`);
         if (res.data.data && res.data.data.length > 0) {
           setProduct(res.data.data[0]);
         }
@@ -130,14 +136,11 @@ function Checkout({ cart, setCart }) {
         influencerCode,
       };
 
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/v1/orders`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderData),
-        },
-      );
+      const response = await fetch(`${process.env.REACT_APP_API_URL}orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
 
       const result = await response.json();
 
@@ -240,8 +243,8 @@ function Checkout({ cart, setCart }) {
               <option value="">
                 {loadingCities ? "Loading cities..." : "Select City"}
               </option>
-              {cities.map((city) => (
-                <option key={city._id} value={city.city}>
+              {cities.map((city, idx) => (
+                <option key={city._id || idx} value={city.city}>
                   {city.city}
                 </option>
               ))}

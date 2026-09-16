@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import "./product.css"; // Your enhanced CSS file
+import axios from "axios";
 
+import "./product.css"; // Your enhanced CSS file
+const API_URL = "http://localhost:8000/api/v1";
+// const LOG_LEVEL = process.env.REACT_APP_LOG_LEVEL || "error";
 function Product({ addToCart, setCart }) {
   const { productId } = useParams();
   const navigate = useNavigate();
@@ -26,14 +29,10 @@ function Product({ addToCart, setCart }) {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/v1/products/${productId}`,
-        );
+        const res = await axios.get(`${API_URL}/products/${productId}`);
+        console.log(res);
 
-        if (!res.ok) throw new Error("Product not found");
-
-        const data = await res.json();
-        const productData = data.data;
+        const productData = res.data.data;
 
         setProduct({
           id: productData._id,
@@ -163,7 +162,7 @@ function Product({ addToCart, setCart }) {
               </div>
             )}
             <img
-              src={getImageUrl(product.imageCover)}
+              src={"/images.jpeg"}
               alt={product.name}
               onLoad={() => setImageLoading(false)}
               onError={(e) => {

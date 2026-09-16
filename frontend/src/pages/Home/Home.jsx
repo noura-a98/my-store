@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
 // Env vars
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = "http://127.0.0.1:8000/api/v1";
 const LOG_LEVEL = process.env.REACT_APP_LOG_LEVEL || "error";
 
 // Helper: log differently in dev vs prod
@@ -47,7 +47,8 @@ function Home() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/v1/products`);
+        const res = await axios.get(`${API_URL}/products`);
+
         if (res.data?.data?.length > 0) {
           setProduct(res.data.data[0]);
         }
@@ -232,7 +233,7 @@ function Home() {
                 ) : (
                   <div style={{ position: "relative" }}>
                     <img
-                      src={productImageUrl}
+                      src={"/images.jpeg"}
                       alt={product?.name || "Sweet Drops"}
                       crossOrigin="anonymous"
                     />
