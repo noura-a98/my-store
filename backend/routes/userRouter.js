@@ -6,6 +6,7 @@ const userController = require('./../controllers/userController');
 // Public routes
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
+router.post('/createAccount', authController.createAccount);
 
 // Protected routes (require authentication but allow all roles)
 router.use(authController.protect);
@@ -17,7 +18,7 @@ router.get('/me', userController.getMe, userController.getUser);
 router.use(authController.restrictTo('admin'));
 
 router.get('/', userController.getAllUsers);
-router.post('/createAccount', authController.createAccount);
+// router.post('/createAccount', authController.createAccount);
 router.get('/:id', userController.getUser);
 
 router.patch('/update-password', authController.updatePassword); // admin updates their password
